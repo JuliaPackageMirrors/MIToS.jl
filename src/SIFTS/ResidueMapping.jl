@@ -67,7 +67,7 @@ end
 for ref_type in [:dbPDB, :dbCATH, :dbSCOP]
   @eval begin
 
-    function call(::Type{$(ref_type)}, map::LightXML.XMLElement)
+    @compat function (::Type{$(ref_type)})(map::LightXML.XMLElement)
       $(ref_type)(
       _get_attribute(map, "dbAccessionId"),
       _get_attribute(map, "dbResNum"),
@@ -82,7 +82,7 @@ end
 for ref_type in [:dbUniProt, :dbPfam, :dbNCBI]
   @eval begin
 
-    function call(::Type{$(ref_type)}, map::LightXML.XMLElement)
+    @compat function (::Type{$(ref_type)})(map::LightXML.XMLElement)
       $(ref_type)(
       _get_attribute(map, "dbAccessionId"),
       parse(Int, _get_attribute(map, "dbResNum")),
@@ -93,7 +93,7 @@ for ref_type in [:dbUniProt, :dbPfam, :dbNCBI]
   end
 end
 
-function call(::Type{dbInterPro}, map::LightXML.XMLElement)
+@compat function (::Type{dbInterPro})(map::LightXML.XMLElement)
   dbInterPro(
     _get_attribute(map, "dbAccessionId"),
     _get_attribute(map, "dbResNum"),
@@ -102,7 +102,7 @@ function call(::Type{dbInterPro}, map::LightXML.XMLElement)
     )
 end
 
-function call(::Type{dbPDBe}, map::LightXML.XMLElement)
+@compat function (::Type{dbPDBe})(map::LightXML.XMLElement)
       dbPDBe(
       parse(Int, _get_attribute(map, "dbResNum")),
       _get_attribute(map, "dbResName")
@@ -138,7 +138,7 @@ function show(io::IO, res::SIFTSResidue)
   println(io, "    InterPro: ",  res.InterPro)
 end
 
-function call(::Type{SIFTSResidue}, residue::LightXML.XMLElement, missing::Bool)
+@compat function (::Type{SIFTSResidue})(residue::LightXML.XMLElement, missing::Bool)
   PDBe = dbPDBe(residue)
   UniProt = Nullable{dbUniProt}()
   Pfam = Nullable{dbPfam}()
@@ -178,7 +178,7 @@ function call(::Type{SIFTSResidue}, residue::LightXML.XMLElement, missing::Bool)
                missing)
 end
 
-call(::Type{SIFTSResidue}, residue::LightXML.XMLElement) =  SIFTSResidue(residue, _is_missing(residue))
+@compat (::Type{SIFTSResidue})(residue::LightXML.XMLElement) =  SIFTSResidue(residue, _is_missing(residue))
 
 # Mapping Functions
 # =================
@@ -267,7 +267,7 @@ end
 Returns `true` if the tests are successfully passed for that `DataBase` sub-type on that `SIFTSResidue`.
 """
 function isobject{T <: DataBase}(res::SIFTSResidue, ::Type{T}, tests::AbstractTest...)
-  dbfield = getfield(res, symbol(name(T)))
+  dbfield = getfield(res, @compat Symbol(name(T)))
   if !isnull(dbfield)
     return(isobject(get(dbfield), tests...))
   end
@@ -275,7 +275,7 @@ function isobject{T <: DataBase}(res::SIFTSResidue, ::Type{T}, tests::AbstractTe
 end
 
 function findobjects{T <: DataBase}(vector::AbstractVector{SIFTSResidue}, ::Type{T}, tests::AbstractTest...)
-  dbname = symbol(name(T))
+  dbname = @compat Symbol(name(T))
   len = length(vector)
   indexes = Array(Int, len)
   n = 0
@@ -290,7 +290,7 @@ function findobjects{T <: DataBase}(vector::AbstractVector{SIFTSResidue}, ::Type
 end
 
 function collectobjects{T <: DataBase}(vector::AbstractVector{SIFTSResidue}, ::Type{T}, tests::AbstractTest...)
-  dbname = symbol(name(T))
+  dbname = @compat Symbol(name(T))
   len = length(vector)
   elements = Array(SIFTSResidue, len)
   n = 0
@@ -312,8 +312,8 @@ Returns a `Nullable` with the field content if the `tests` are passed over a det
 The function Returns `nothing` if the DataBase to test or capture is null in the `SIFTSResidue`.
 """
 function capture{C <: DataBase, T <: DataBase}(res::SIFTSResidue, db_capture::Type{C}, field::Symbol, db_test::Type{T}, tests::AbstractTest...)
-  dbfield_capture = getfield(res, symbol(name(C)))
-  dbfield_test = getfield(res, symbol(name(T)))
+  dbfield_capture = getfield(res, @compat Symbol(name(C)))
+  dbfield_test = getfield(res, @compat Symbol(name(T)))
   if !isnull(dbfield_capture) && !isnull(dbfield_test)
     captured = getfield(get(dbfield_capture), field)
     for test in tests
@@ -329,7 +329,7 @@ end
 "Returns the **type** of the `field` in the first object of the collection"
 function guess_type{T <: DataBase}(collection::AbstractVector{SIFTSResidue}, ::Type{T}, field::Symbol)
   for res in collection
-    dbfield = getfield(res, symbol(name(T)))
+    dbfield = getfield(res, @compat Symbol(name(T)))
     if !isnull(dbfield)
       data = get(dbfield)
       if field in fieldnames(data)

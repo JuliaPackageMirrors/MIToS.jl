@@ -23,6 +23,7 @@ using Clustering            # Used for sequence clustering: ClusteringResult
 using FastaIO               # FastaReader (fast)
 using RecipesBase           # Plots for MSAs
 using MIToS.Utils
+using Compat
 
 import Base: parse, print, write, convert
 

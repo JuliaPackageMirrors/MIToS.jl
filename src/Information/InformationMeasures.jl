@@ -12,7 +12,7 @@ immutable Entropy{T} <: SymmetricMeasure{T}
   base::T
 end
 
-call{T}(::Type{Entropy{T}}) = Entropy(T(Base.e))
+@compat (::Type{Entropy{T}}){T}() = Entropy(T(Base.e))
 
 ## Estimate Entropy using ResidueProbability
 
@@ -93,7 +93,7 @@ immutable KullbackLeibler{T} <: SymmetricMeasure{T}
   background::AbstractArray{T}
 end
 
-call{T}(::Type{KullbackLeibler{T}}, background::AbstractArray{T}) = KullbackLeibler(T(Base.e), background)
+@compat (::Type{KullbackLeibler{T}}){T}(background::AbstractArray{T}) = KullbackLeibler(T(Base.e), background)
 
 """
 `estimate(KullbackLeibler(base, background), p)`
@@ -126,7 +126,7 @@ immutable MutualInformation{T} <: SymmetricMeasure{T}
   base::T
 end
 
-call{T}(::Type{MutualInformation{T}}) = MutualInformation(T(Base.e))
+@compat (::Type{MutualInformation{T}}){T}() = MutualInformation(T(Base.e))
 
 @inline _mi{T}(::Type{T}, pij, pi, pj) = ifelse(pij > zero(T) && pi > zero(T), T(pij * log(pij/(pi*pj))), zero(T))
 
@@ -195,7 +195,7 @@ immutable MutualInformationOverEntropy{T} <: SymmetricMeasure{T}
   base::T
 end
 
-call{T}(::Type{MutualInformationOverEntropy{T}}) = MutualInformationOverEntropy(T(Base.e))
+@compat (::Type{MutualInformationOverEntropy{T}}){T}() = MutualInformationOverEntropy(T(Base.e))
 
 function estimate{B}(measure::MutualInformationOverEntropy{B}, table)
   H = estimate(Entropy(measure.base), table)

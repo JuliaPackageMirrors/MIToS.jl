@@ -104,13 +104,13 @@ type ResidueCount{T, N, UseGap} <: ResidueContingencyTables{T, N, UseGap}
   total::T
 end
 
-call{T}(::Type{ResidueCount{T, 1, true}}) = ResidueCount{T, 1, true}(Array(T, 21), Array(T, (21,1)), zero(T))
-call{T}(::Type{ResidueCount{T, 2, true}}) = ResidueCount{T, 2, true}(Array(T, (21, 21)), Array(T, (21,2)), zero(T))
+@compat (::Type{ResidueCount{T, 1, true}}){T}() = ResidueCount{T, 1, true}(Array(T, 21), Array(T, (21,1)), zero(T))
+@compat (::Type{ResidueCount{T, 2, true}}){T}() = ResidueCount{T, 2, true}(Array(T, (21, 21)), Array(T, (21,2)), zero(T))
 
-call{T}(::Type{ResidueCount{T, 1, false}}) = ResidueCount{T, 1, false}(Array(T, 20), Array(T, (20,1)), zero(T))
-call{T}(::Type{ResidueCount{T, 2, false}}) = ResidueCount{T, 2, false}(Array(T, (20, 20)), Array(T, (20,2)), zero(T))
+@compat (::Type{ResidueCount{T, 1, false}}){T}() = ResidueCount{T, 1, false}(Array(T, 20), Array(T, (20,1)), zero(T))
+@compat (::Type{ResidueCount{T, 2, false}}){T}() = ResidueCount{T, 2, false}(Array(T, (20, 20)), Array(T, (20,2)), zero(T))
 
-function call{T, N, UseGap}(::Type{ResidueCount{T, N, UseGap}})
+@compat function (::Type{ResidueCount{T, N, UseGap}}){T, N, UseGap}()
   nres = UseGap ? 21 : 20
   ResidueCount{T, N, UseGap}(Array(T, (Int[ nres for d in 1:N]...)), Array(T, (nres, N)), zero(T))
 end
@@ -387,13 +387,13 @@ type ResidueProbability{T, N, UseGap} <: ResidueContingencyTables{T, N, UseGap}
   marginals::Array{T, 2}
 end
 
-call{T}(::Type{ResidueProbability{T, 1, true}}) = ResidueProbability{T, 1, true}(Array(T, 21), Array(T, (21,1)))
-call{T}(::Type{ResidueProbability{T, 2, true}}) = ResidueProbability{T, 2, true}(Array(T, (21, 21)), Array(T, (21,2)))
+@compat (::Type{ResidueProbability{T, 1, true}}){T}() = ResidueProbability{T, 1, true}(Array(T, 21), Array(T, (21,1)))
+@compat (::Type{ResidueProbability{T, 2, true}}){T}() = ResidueProbability{T, 2, true}(Array(T, (21, 21)), Array(T, (21,2)))
 
-call{T}(::Type{ResidueProbability{T, 1, false}}) = ResidueProbability{T, 1, false}(Array(T, 20), Array(T, (20,1)))
-call{T}(::Type{ResidueProbability{T, 2, false}}) = ResidueProbability{T, 2, false}(Array(T, (20, 20)), Array(T, (20,2)))
+@compat (::Type{ResidueProbability{T, 1, false}}){T}() = ResidueProbability{T, 1, false}(Array(T, 20), Array(T, (20,1)))
+@compat (::Type{ResidueProbability{T, 2, false}}){T}() = ResidueProbability{T, 2, false}(Array(T, (20, 20)), Array(T, (20,2)))
 
-function call{T, N, UseGap}(::Type{ResidueProbability{T, N, UseGap}})
+@compat function (::Type{ResidueProbability{T, N, UseGap}}){T, N, UseGap}()
   nres = UseGap ? 21 : 20
   ResidueProbability{T, N, UseGap}(Array(T, (Int[ nres for d in 1:N]...)), Array(T, (nres, N)))
 end

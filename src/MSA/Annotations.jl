@@ -20,7 +20,7 @@ type Annotations
     residues::Dict{Tuple{ASCIIString,ASCIIString},ASCIIString}
 end
 
-call(::Type{Annotations}) = Annotations(OrderedDict{ASCIIString, ByteString}(),
+@compat (::Type{Annotations})() = Annotations(OrderedDict{ASCIIString, ByteString}(),
                                         Dict{Tuple{ASCIIString,ASCIIString},ASCIIString}(),
                                         Dict{ASCIIString, ASCIIString}(),
                                         Dict{Tuple{ASCIIString,ASCIIString},ASCIIString}())

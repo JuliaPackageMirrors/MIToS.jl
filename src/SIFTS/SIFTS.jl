@@ -22,6 +22,7 @@ module SIFTS
   using LightXML
   using AutoHashEquals
   using MIToS.Utils
+  using Compat
 
   import Base: hash, ==, call, string, print, write, show, convert, isnull, parse
   import MIToS.Utils: isobject, findobjects, collectobjects, capture, collectcaptures, guess_type
